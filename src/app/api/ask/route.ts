@@ -11,7 +11,11 @@ import { ChatOllama } from "@langchain/ollama";
 // Simple rate limiting (in-memory)
 const requestCounts = new Map<string, { count: number; resetTime: number }>();
 
-function checkRateLimit(ip: string, maxRequests = 10, windowMs = 60000): boolean {
+function checkRateLimit(
+  ip: string,
+  maxRequests = 10,
+  windowMs = 60000
+): boolean {
   const now = Date.now();
   const userLimit = requestCounts.get(ip);
 
@@ -31,28 +35,36 @@ function checkRateLimit(ip: string, maxRequests = 10, windowMs = 60000): boolean
 export async function POST(req: NextRequest) {
   try {
     // Get user IP for rate limiting
-    const ip = req.headers.get('x-forwarded-for') || 
-               req.headers.get('x-real-ip') || 
-               'unknown';
+    const ip =
+      req.headers.get("x-forwarded-for") ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
 
     // Check rate limit
     if (!checkRateLimit(ip)) {
-      return Response.json({
-        answer: "⏱️ Rate limit exceeded. Please wait a minute before trying again.",
-        success: false,
-        error: "RATE_LIMIT"
-      }, { status: 429 });
+      return Response.json(
+        {
+          answer:
+            "⏱️ Rate limit exceeded. Please wait a minute before trying again.",
+          success: false,
+          error: "RATE_LIMIT",
+        },
+        { status: 429 }
+      );
     }
 
     const { query } = await req.json();
-    
+
     // Validate input
-    if (!query || typeof query !== 'string' || query.trim().length < 3) {
-      return Response.json({
-        answer: "Please provide a valid stock query (at least 3 characters).",
-        success: false,
-        error: "INVALID_INPUT"
-      }, { status: 400 });
+    if (!query || typeof query !== "string" || query.trim().length < 3) {
+      return Response.json(
+        {
+          answer: "Please provide a valid stock query (at least 3 characters).",
+          success: false,
+          error: "INVALID_INPUT",
+        },
+        { status: 400 }
+      );
     }
 
     console.info("\n🔍 Query:", query);
@@ -77,7 +89,7 @@ export async function POST(req: NextRequest) {
     • "Bharti Airtel" or "Airtel" → "BHARTIARTL"
 - NEVER use .NS or .BO suffix when calling the tool - it's added automatically.
 - If user asks about a company name, convert it to the stock symbol first.
-- After getting the price data, provide a clear, conversational response.
+- After getting the price data, provide a clear, conversational response in the form of string with proper formatting.
 - If the tool returns an error, explain it in simple terms and suggest what to try.`,
       ],
       ["human", "{input}"],
@@ -85,7 +97,7 @@ export async function POST(req: NextRequest) {
     ]);
 
     const tools = [StockPriceTool];
-    
+
     const model = new ChatOllama({
       model: "llama3.2:3b",
       temperature: 0,
@@ -95,7 +107,7 @@ export async function POST(req: NextRequest) {
     console.info("✅ Models and tools loaded");
 
     const agent = createToolCallingAgent({ llm: model, tools, prompt });
-    
+
     const agent_executor = AgentExecutor.fromAgentAndTools({
       agent,
       tools,
@@ -107,22 +119,25 @@ export async function POST(req: NextRequest) {
     console.info("✅ Executor loaded");
 
     const result = await agent_executor.invoke({ input: query });
-    
+
     console.info("✅ Result:", result.output);
 
     return Response.json({
       answer: result.output,
       intermediateSteps: result.intermediateSteps,
-      success: true
+      success: true,
     });
-
   } catch (error: any) {
     console.error("❌ Agent execution error:", error);
-    
-    return Response.json({
-      answer: "Sorry, I encountered an error processing your request. Please try again or rephrase your question.",
-      error: error.message,
-      success: false
-    }, { status: 500 });
+
+    return Response.json(
+      {
+        answer:
+          "Sorry, I encountered an error processing your request. Please try again or rephrase your question.",
+        error: error.message,
+        success: false,
+      },
+      { status: 500 }
+    );
   }
 }
