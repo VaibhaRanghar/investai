@@ -7,6 +7,7 @@ import {
 import { StockPriceTool } from "@/app/lib/tools/stockPriceTool";
 import { AgentExecutor, createToolCallingAgent } from "langchain/agents";
 import { ChatOllama } from "@langchain/ollama";
+import { ChatGroq } from "@langchain/groq";
 
 // Simple rate limiting (in-memory)
 const requestCounts = new Map<string, { count: number; resetTime: number }>();
@@ -90,6 +91,7 @@ export async function POST(req: NextRequest) {
 - NEVER use .NS or .BO suffix when calling the tool - it's added automatically.
 - If user asks about a company name, convert it to the stock symbol first.
 - After getting the price data, provide a clear, conversational response in the form of string with proper formatting.
+- Don't answer like this "Please note that the actual data may vary based on the current market conditions."
 - If the tool returns an error, explain it in simple terms and suggest what to try.`,
       ],
       ["human", "{input}"],
@@ -97,14 +99,22 @@ export async function POST(req: NextRequest) {
     ]);
 
     const tools = [StockPriceTool];
+    let model;
+    if (process.env.NODE_ENV === "development") {
+      model = new ChatOllama({
+        model: "llama3.2:3b",
+        temperature: 0,
+        baseUrl: process.env.OLLAMA_BASE_URL || "http://localhost:11434",
+      });
+    } else {
+      model = new ChatGroq({
+        model: "llama-3.3-70b-versatile", 
+        temperature: 0,
+        apiKey: process.env.GROQ_API_KEY,
+      });
+    }
 
-    const model = new ChatOllama({
-      model: "llama3.2:3b",
-      temperature: 0,
-      baseUrl: "http://localhost:11434",
-    });
-
-    console.info("✅ Models and tools loaded");
+    console.info("✅ Models and tools loaded.\nModel = ", model);
 
     const agent = createToolCallingAgent({ llm: model, tools, prompt });
 
@@ -112,8 +122,8 @@ export async function POST(req: NextRequest) {
       agent,
       tools,
       returnIntermediateSteps: true,
-      maxIterations: 3, // ← PREVENTS INFINITE LOOPS
-      earlyStoppingMethod: "generate",
+      maxIterations: 3, 
+      earlyStoppingMethod: "force",
     });
 
     console.info("✅ Executor loaded");

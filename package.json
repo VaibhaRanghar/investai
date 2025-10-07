@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@langchain/groq": "^0.2.4",
     "@langchain/ollama": "^0.2.4",
     "axios": "^1.12.2",
     "langchain": "^0.3.35",

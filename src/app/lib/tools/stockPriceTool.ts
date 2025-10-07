@@ -34,7 +34,7 @@ export const StockPriceTool = tool(
 
       const meta = result.meta;
       const price = meta.regularMarketPrice;
-      const previousClose = meta.previousClose;
+      const previousClose = meta.chartPreviousClose;
       const dayHigh = meta.regularMarketDayHigh;
       const dayLow = meta.regularMarketDayLow;
       const volume = meta.regularMarketVolume;
