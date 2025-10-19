@@ -1,5 +1,6 @@
-import StockQueryForm from "./StockQueryForm";
 import FeatureCard from "./FeatureCard";
+// import StockComparison from "./StockComparison";
+import StockQueryForm from "./StockQueryForm";
 
 export default function LandingPage() {
   return (
@@ -10,7 +11,7 @@ export default function LandingPage() {
           {/* Logo/Title */}
           <div className="mb-6">
             <h1 className="text-6xl font-bold bg-gradient-to-r from-indigo-800 to-purple-600 bg-clip-text text-transparent mb-2">
-              InvestAI 🤖
+              InvestAI 🤖 Free Investment tips.
             </h1>
             <div className="h-1 w-32 bg-gradient-to-r from-indigo-600 to-purple-600 mx-auto rounded-full"></div>
           </div>
