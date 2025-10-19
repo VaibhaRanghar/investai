@@ -14,8 +14,6 @@ services:
     environment:
       NODE_ENV: development   # for dev mode
       OLLAMA_BASE_URL: http://localhost:11434
-      GROQ_API_KEY: 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
-
     ports:
       - 3000:3000
     volumes:
