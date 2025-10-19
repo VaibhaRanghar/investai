@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get("type") || "announcements"; // announcements, stock-news, market-movers
     const symbol = searchParams.get("symbol");
-    const count = parseInt(searchParams.get("count") || "20");
+    // const count = parseInt(searchParams.get("count") || "20");
 
     console.info(`\n📰 News Request: ${type}${symbol ? ` for ${symbol}` : ""}`);
 

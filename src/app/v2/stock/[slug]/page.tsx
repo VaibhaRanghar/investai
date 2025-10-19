@@ -48,7 +48,7 @@ export default function StockDetailPage({
     if (stockData && !analysis && !analysisLoading) {
       analyze(`Analyze ${symbol} stock comprehensively`);
     }
-  }, [symbol, analysis, analysisLoading, stockData]);
+  }, [symbol, analysis, analysisLoading, stockData, analyze]);
 
   const tabs = [
     {
@@ -99,7 +99,7 @@ export default function StockDetailPage({
     );
   }
 
-  const { equity, trade, corporate } = stockData;
+  const { equity, trade } = stockData;
 
   // Prepare data for components
   const stockHeaderData = {

@@ -9,8 +9,8 @@ export default function MetricCard({
   symbolB,
   winner,
   format = "number",
-  inverse = false,
-}: MetricCardProps) {
+}: // inverse = false,
+MetricCardProps) {
   const formatValue = (value: number | null): string => {
     if (value === null || value === undefined) return "N/A";
 

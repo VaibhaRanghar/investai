@@ -12,7 +12,7 @@ import { nseService } from "@/lib/services/nseService";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { symbol: string } }
+  { params }: { params: Promise<{ symbol: string }> }
 ) {
   try {
     const ip = getClientIp(request);

@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useStockComparison } from "@/hooks/v2/useStockComparison";
 import { useMarketStatus } from "@/hooks/v2/useMarketStatus";
 import { Button } from "@/components/v2/ui/Button";
 import { StockSearchInput } from "@/components/v2/forms/StockSearchInput";
-import { ComparisonTable } from "@/components/v2/comparison/ComparisonTable";
-import { WinnerCard } from "@/components/v2/comparison/WinnerCard";
 import { AIInsightsCard } from "@/components/v2/stock/AIInsightsCard";
 import { MarketStatusBanner } from "@/components/v2/market/MarketStatusBanner";
 import { ArrowRight, BarChart3 } from "lucide-react";
