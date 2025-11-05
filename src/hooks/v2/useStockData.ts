@@ -2,10 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { apiClient } from "@/lib/v2/api/client";
-
+import {
+  EquityCorporateInfo,
+  EquityDetails,
+  EquityTradeInfo,
+} from "stock-nse-india/build/interface";
+interface Data {
+  equity: EquityDetails;
+  trade: EquityTradeInfo | null;
+  corporate: EquityCorporateInfo | null;
+}
 export function useStockData(symbol: string | null) {
   console.log("symbol in usestockData:", symbol);
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<Data | any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

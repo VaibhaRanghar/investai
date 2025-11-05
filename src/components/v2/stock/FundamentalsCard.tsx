@@ -2,9 +2,8 @@ import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/Card";
 import { Badge } from "../ui/Badge";
 import { ArrowUp, ArrowDown, Minus } from "lucide-react";
-import { cn } from "@/app/lib/utils";
+import { cn } from "@/lib/utils";
 import { FundamentalsCardProps } from "@/typesV2";
-
 
 export const FundamentalsCard: React.FC<FundamentalsCardProps> = ({
   metrics,

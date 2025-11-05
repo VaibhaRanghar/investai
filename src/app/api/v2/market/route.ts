@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
 
     const cacheKey = "market:status";
     const cached = cacheService.get(cacheKey);
-    console.log("MarketStatus cached:", cached);
+    console.log("MarketStatus cached:", cached === null);
 
     if (cached) {
       return successResponse({ data: cached, cached: true });

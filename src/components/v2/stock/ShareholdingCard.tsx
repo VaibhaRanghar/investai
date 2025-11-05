@@ -2,9 +2,8 @@ import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/Card";
 import { Badge } from "../ui/Badge";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
-import { cn } from "@/app/lib/utils";
+import { cn } from "@/lib/utils";
 import { ShareholdingCardProps } from "@/typesV2";
-
 
 export const ShareholdingCard: React.FC<ShareholdingCardProps> = ({
   current,

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest } from "next/server";
-import { MasterAgent } from "@/lib/v2/agents/masterAgent";
+// import { MasterAgent } from "@/lib/v2/agents/masterAgent";
 import {
   checkRateLimit,
   getClientIp,
@@ -8,6 +8,8 @@ import {
   successResponse,
 } from "@/lib/v2/utils/apiHelpers";
 import { QuerySchema } from "@/lib/v2/utils/validators";
+import { AnalysisAgent } from "@/lib/v2/agents/analysisAgent";
+import { JsonOutputParser } from "@langchain/core/output_parsers";
 
 export async function POST(request: NextRequest) {
   const startTime = Date.now();
@@ -30,17 +32,13 @@ export async function POST(request: NextRequest) {
     const { query } = validation.data;
 
     // Process query with master agent
-    const masterAgent = new MasterAgent();
-    const result = await masterAgent.processQuery(query);
-    
+
+    const analysisAgent = await AnalysisAgent.create();
+    const result = await analysisAgent.analyze(query);
+
     return successResponse({
-      answer: result.answer,
-      metadata: {
-        queryType: result.type,
-        symbols: result.symbols,
-        confidence: result.confidence,
-        processingTime: Date.now() - startTime,
-      },
+      answer: result,
+      processingTime: Date.now() - startTime,
     });
   } catch (error: any) {
     console.error("Analyze API Error:", error);

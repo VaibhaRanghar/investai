@@ -1,3 +1,5 @@
+import path from "path";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 interface CacheEntry<T> {
   data: T;
@@ -16,6 +18,7 @@ export class CacheService {
     CORPORATE: 60 * 60 * 1000, // 1 hour
     OPTIONS: 60 * 1000, // 1 minute
     MARKET_STATUS: 10 * 1000, // 10 seconds
+    STOCKS: 60 * 60 * 24000,
   };
 
   private constructor() {
@@ -38,7 +41,7 @@ export class CacheService {
       this.cache.delete(key);
       return null;
     }
-
+    console.log("CAHED DATA =", entry.data);
     return entry.data as T;
   }
 

@@ -1,0 +1,35 @@
+{
+  "symbol": "TATVA",
+  "currentPrice": "₹1531.00",
+  "trend": "NEUTRAL",
+  "movingAverages": {
+    "ma5": "₹1051.34",
+    "ma5Signal": "Above (Bullish)",
+    "ma10": "₹1034.35",
+    "ma20": "₹1057.64",
+    "ma20Signal": "Above (Bullish)"
+  },
+  "indicators": {
+    "rsi": "42.0",
+    "rsiSignal": "NEUTRAL",
+    "macd": "Bullish Crossover",
+    "volatility": "35.42%",
+    "volatilityAssessment": "High"
+  },
+  "supportLevels": [
+    "₹1048.00",
+    "₹1037.10",
+    "₹991.50"
+  ],
+  "resistanceLevels": [
+    "₹1044.70",
+    "₹1057.80",
+    "₹1105.30"
+  ],
+  "signals": {
+    "overallSignal": "BUY",
+    "buySignals": 2,
+    "sellSignals": 0,
+    "neutralSignals": 6
+  }
+}

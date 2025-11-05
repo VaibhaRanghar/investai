@@ -2,7 +2,7 @@ import React from "react";
 
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { Badge } from "../ui/Badge";
-import { cn } from "@/app/lib/utils";
+import { cn } from "@/lib/utils";
 import { StockHeaderProps } from "@/typesV2";
 
 export const StockHeader: React.FC<StockHeaderProps> = ({

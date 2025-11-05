@@ -19,7 +19,7 @@ import {
   DollarSign,
 } from "lucide-react";
 import { Range52WeekCard } from "@/components/v2/analysis/Range52WeekCard";
-import { Metric } from "@/typesV2";
+import { ParsedToMetricsData } from "@/lib/v2/utils/dataParser";
 
 export default function StockDetailPage({
   params,
@@ -35,13 +35,6 @@ export default function StockDetailPage({
   } = useStockData(symbol?.toUpperCase());
   const { marketStatus } = useMarketStatus();
   const { analysis, loading: analysisLoading, analyze } = useStockAnalysis();
-
-  // console.log("[StockDetailPage] Render:", {
-  //   symbol,
-  //   hasData: !!stockData,
-  //   stockLoading,
-  //   stockError,
-  // });
 
   // Trigger AI analysis when stock data loads
   React.useEffect(() => {
@@ -99,96 +92,9 @@ export default function StockDetailPage({
     );
   }
 
-  const { equity, trade } = stockData;
-
-  // Prepare data for components
-  const stockHeaderData = {
-    symbol: equity.info.symbol,
-    name: equity.info.companyName,
-    price: equity.priceInfo.lastPrice,
-    change: equity.priceInfo.change,
-    changePercent: equity.priceInfo.pChange,
-    sector: equity.metadata.industry,
-    indices: equity.metadata.pdSectorIndAll?.slice(0, 5) || [
-      equity.metadata.pdSectorInd,
-    ],
-  };
-
-  const priceData = {
-    open: equity.priceInfo.open,
-    high: equity.priceInfo.intraDayHighLow.max,
-    low: equity.priceInfo.intraDayHighLow.min,
-    previousClose: equity.priceInfo.previousClose,
-    vwap: equity.priceInfo.vwap,
-    volume: trade?.marketDeptOrderBook?.tradeInfo?.totalTradedVolume || 0,
-    high52w: equity.priceInfo.weekHighLow.max,
-    low52w: equity.priceInfo.weekHighLow.min,
-  };
-
-  const metricsData = [
-    {
-      label: "P/E Ratio",
-      value: equity.metadata.pdSymbolPe?.toFixed(2) || "N/A",
-      subValue: `Sector: ${equity.metadata.pdSectorPe?.toFixed(2) || "N/A"}`,
-      variant:
-        equity.metadata.pdSymbolPe < equity.metadata.pdSectorPe
-          ? "success"
-          : "neutral",
-      badge:
-        equity.metadata.pdSymbolPe < equity.metadata.pdSectorPe
-          ? "Fair Value"
-          : undefined,
-    },
-    {
-      label: "Market Cap",
-      value: trade
-        ? `₹${(
-            trade.marketDeptOrderBook.tradeInfo.totalMarketCap / 100
-          ).toFixed(0)} Cr`
-        : "N/A",
-      subValue: "Mid Cap",
-    },
-    {
-      label: "EPS",
-      value: equity.securityInfo.eps
-        ? `₹${equity.securityInfo.eps.toFixed(2)}`
-        : "N/A",
-      subValue: "TTM",
-    },
-    {
-      label: "Book Value",
-      value: equity.securityInfo.bookValue
-        ? `₹${equity.securityInfo.bookValue.toFixed(2)}`
-        : "N/A",
-      subValue: "Per Share",
-    },
-    {
-      label: "Dividend Yield",
-      value: equity.securityInfo.dividendYield
-        ? `${equity.securityInfo.dividendYield.toFixed(2)}%`
-        : "N/A",
-      variant: equity.securityInfo.dividendYield > 1 ? "success" : "neutral",
-    },
-    {
-      label: "Delivery %",
-      value: trade
-        ? `${trade.securityWiseDP.deliveryToTradedQuantity.toFixed(2)}%`
-        : "N/A",
-      variant:
-        trade?.securityWiseDP.deliveryToTradedQuantity > 60
-          ? "success"
-          : "neutral",
-    },
-  ] as Metric[];
-
-  const range52Data = {
-    current: equity.priceInfo.lastPrice,
-    low: equity.priceInfo.weekHighLow.min,
-    high: equity.priceInfo.weekHighLow.max,
-    lowDate: equity.priceInfo.weekHighLow.minDate,
-    highDate: equity.priceInfo.weekHighLow.maxDate,
-  };
-
+  const { equity, trade, corporate } = stockData;
+  const { metricsData, priceData, range52Data, stockHeaderData } =
+    ParsedToMetricsData(equity, trade, corporate);
   console.log("Analysis data in page= ", analysis);
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
@@ -198,12 +104,20 @@ export default function StockDetailPage({
           <div className="mb-6">
             <MarketStatusBanner
               isOpen={marketStatus.marketState[0]?.marketStatus === "Open"}
-              niftyValue={marketStatus.indicativenifty50?.closingValue || 0}
-              niftyChange={marketStatus.indicativenifty50?.change || 0}
+              niftyValue={marketStatus.marketState[0]?.last || 0}
+              niftyChange={marketStatus.marketState[0]?.variation || 0}
               niftyChangePercent={
-                marketStatus.indicativenifty50?.perChange || 0
+                marketStatus.marketState[0]?.percentChange || 0
               }
               timestamp={marketStatus.marketState[0]?.tradeDate || ""}
+              giftNifty={
+                marketStatus.giftnifty
+                  ? {
+                      value: marketStatus.giftnifty.LASTPRICE,
+                      change: parseFloat(marketStatus.giftnifty.DAYCHANGE),
+                    }
+                  : undefined
+              }
             />
           </div>
         )}

@@ -80,7 +80,8 @@ class ApiClient {
       corporateActions: any[];
       meetings: any[];
       financialResults: any[];
-    }>(`/news?symbol=${symbol}`);
+    }>(`/news?s
+      ymbol=${symbol}`);
   }
 
   // Get options data
@@ -101,3 +102,4 @@ class ApiClient {
 }
 
 export const apiClient = new ApiClient();
+// How are the fundamentals of Utkarsh Small Finance Bank Limited-RE. Should i invest in it or not?

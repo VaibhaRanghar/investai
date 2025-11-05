@@ -9,9 +9,8 @@ export function useMarketStatus() {
   useEffect(() => {
     const fetchMarketStatus = async () => {
       const result = await apiClient.getMarketStatus();
-      // console.log("Market data:", result);
       if (result.success && result.data) {
-        setMarketStatus(result.data.data);
+        setMarketStatus(result.data);
       }
       setLoading(false);
     };
@@ -23,6 +22,5 @@ export function useMarketStatus() {
 
     return () => clearInterval(interval);
   }, []);
-
   return { marketStatus, loading };
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/Card";
 import { Badge } from "../ui/Badge";
-import { cn } from "@/app/lib/utils";
+import { cn } from "@/lib/utils";
 import { TechnicalIndicatorsProps } from "@/typesV2";
 
 export const TechnicalIndicators: React.FC<TechnicalIndicatorsProps> = ({

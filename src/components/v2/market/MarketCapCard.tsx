@@ -1,9 +1,8 @@
 import React from "react";
 import { Card, CardContent } from "../ui/Card";
 import { Building2, TrendingDown, TrendingUp } from "lucide-react";
-import { cn } from "@/app/lib/utils";
+import { cn } from "@/lib/utils";
 import { MarketCapCardProps } from "@/typesV2";
-
 
 export const MarketCapCard: React.FC<MarketCapCardProps> = ({
   totalMarketCap,

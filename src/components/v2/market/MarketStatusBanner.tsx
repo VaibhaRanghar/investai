@@ -1,7 +1,7 @@
 import React from "react";
 import { Badge } from "../ui/Badge";
 import { Clock, TrendingUp, TrendingDown } from "lucide-react";
-import { cn } from "@/app/lib/utils";
+import { cn } from "@/lib/utils";
 import { MarketStatusBannerProps } from "@/typesV2";
 
 export const MarketStatusBanner: React.FC<MarketStatusBannerProps> = ({
@@ -64,7 +64,7 @@ export const MarketStatusBanner: React.FC<MarketStatusBannerProps> = ({
               </p>
               <div className="flex items-center space-x-2">
                 <span className="text-lg font-bold text-gray-900">
-                  {giftNifty.value.toLocaleString()}
+                  {giftNifty?.value?.toLocaleString()}
                 </span>
                 <span
                   className={cn(
@@ -82,16 +82,4 @@ export const MarketStatusBanner: React.FC<MarketStatusBannerProps> = ({
       </div>
     </div>
   );
-};
-
-export const dummyMarketStatus: MarketStatusBannerProps = {
-  isOpen: false,
-  niftyValue: 25285.35,
-  niftyChange: 103.55,
-  niftyChangePercent: 0.41,
-  timestamp: "10-Oct-2025 3:30 PM",
-  giftNifty: {
-    value: 25230,
-    change: -55.35,
-  },
 };

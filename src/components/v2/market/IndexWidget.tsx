@@ -1,10 +1,8 @@
 import React from "react";
 import { Card, CardContent } from "../ui/Card";
 import { TrendingUp, TrendingDown } from "lucide-react";
-import { cn } from "@/app/lib/utils";
+import { cn } from "@/lib/utils";
 import { IndexWidgetProps } from "@/typesV2";
-
-
 
 export const IndexWidget: React.FC<IndexWidgetProps> = ({ indices }) => {
   return (

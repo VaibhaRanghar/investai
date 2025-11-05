@@ -14,13 +14,13 @@ export default function HomeV2() {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const { marketStatus, loading: marketLoading } = useMarketStatus();
+  console.log("marketStatus", marketStatus);
   const {
     analysis,
     loading: analysisLoading,
     error,
     analyze,
   } = useStockAnalysis();
-
   const handleSearch = async () => {
     if (!query.trim()) return;
 
@@ -44,10 +44,10 @@ export default function HomeV2() {
           <div className="mb-8">
             <MarketStatusBanner
               isOpen={marketStatus.marketState[0]?.marketStatus === "Open"}
-              niftyValue={marketStatus.indicativenifty50?.closingValue || 0}
-              niftyChange={marketStatus.indicativenifty50?.change || 0}
+              niftyValue={marketStatus.marketState[0]?.last || 0}
+              niftyChange={marketStatus.marketState[0]?.variation || 0}
               niftyChangePercent={
-                marketStatus.indicativenifty50?.perChange || 0
+                marketStatus.marketState[0]?.percentChange || 0
               }
               timestamp={marketStatus.marketState[0]?.tradeDate || ""}
               giftNifty={
@@ -126,7 +126,7 @@ export default function HomeV2() {
             icon={<TrendingUp className="w-8 h-8" />}
             title="Stock Analysis"
             description="Comprehensive analysis of price, fundamentals, and AI-powered recommendations"
-            href="/v2/stock/IRCTC"
+            href="/v2/"
           />
           <FeatureCard
             icon={<BarChart3 className="w-8 h-8" />}

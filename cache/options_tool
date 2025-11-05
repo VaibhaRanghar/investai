@@ -1,0 +1,23 @@
+{
+  "symbol": "COLPAL",
+  "currentPrice": "₹2258.40",
+  "putCallRatio": "0.74",
+  "sentiment": "Bearish (High Call OI)",
+  "maxPain": "₹2500",
+  "maxPainDistance": "10.70%",
+  "highestCallOI": {
+    "strike": "₹2300",
+    "oi": "0.02L",
+    "interpretation": "Strong Resistance"
+  },
+  "highestPutOI": {
+    "strike": "₹2200",
+    "oi": "0.01L",
+    "interpretation": "Strong Support"
+  },
+  "impliedVolatility": "21.57%",
+  "ivAssessment": "Moderate",
+  "expiryDate": "25-Nov-2025",
+  "totalCallVolume": "0.00L",
+  "totalPutVolume": "0.00L"
+}

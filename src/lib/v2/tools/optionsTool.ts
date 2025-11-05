@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DynamicStructuredTool } from '@langchain/core/tools';
-import { z } from 'zod';
+import { DynamicStructuredTool, DynamicTool } from "@langchain/core/tools";
+import { z } from "zod";
 
-import { cacheService } from '../services/cacheService';
-import { nseService } from '@/lib/services/nseService';
+import { cacheService } from "../services/cacheService";
+import { nseService } from "@/lib/services/nseService";
+import fs from "fs";
+import path from "path";
 
 export const optionsTool = new DynamicStructuredTool({
-  name: 'analyze_options',
+  name: "analyze_options",
   description:
-    'Analyze options chain data including Put-Call Ratio, Max Pain, Open Interest for NSE stocks',
+    "Analyze options chain data including Put-Call Ratio, Max Pain, Open Interest for NSE stocks",
   schema: z.object({
-    symbol: z.string().describe('Stock symbol for options analysis'),
+    symbol: z.string().describe("Stock symbol for options analysis"),
   }),
   func: async ({ symbol }) => {
     try {
@@ -82,31 +84,44 @@ export const optionsTool = new DynamicStructuredTool({
         putCallRatio: pcr.toFixed(2),
         sentiment:
           pcr > 1.2
-            ? 'Bullish (High Put OI)'
+            ? "Bullish (High Put OI)"
             : pcr < 0.8
-            ? 'Bearish (High Call OI)'
-            : 'Neutral',
+            ? "Bearish (High Call OI)"
+            : "Neutral",
         maxPain: `₹${maxPainStrike}`,
-        maxPainDistance: `${((parseInt(maxPainStrike) - currentPrice) / currentPrice * 100).toFixed(2)}%`,
+        maxPainDistance: `${(
+          ((parseInt(maxPainStrike) - currentPrice) / currentPrice) *
+          100
+        ).toFixed(2)}%`,
         highestCallOI: {
           strike: `₹${highestCallOI.strike}`,
-          oi: (highestCallOI.oi / 100000).toFixed(2) + 'L',
-          interpretation: 'Strong Resistance',
+          oi: (highestCallOI.oi / 100000).toFixed(2) + "L",
+          interpretation: "Strong Resistance",
         },
         highestPutOI: {
           strike: `₹${highestPutOI.strike}`,
-          oi: (highestPutOI.oi / 100000).toFixed(2) + 'L',
-          interpretation: 'Strong Support',
+          oi: (highestPutOI.oi / 100000).toFixed(2) + "L",
+          interpretation: "Strong Support",
         },
         impliedVolatility: `${avgIV.toFixed(2)}%`,
-        ivAssessment: avgIV > 30 ? 'High (Volatile market)' : avgIV < 20 ? 'Low (Calm market)' : 'Moderate',
+        ivAssessment:
+          avgIV > 30
+            ? "High (Volatile market)"
+            : avgIV < 20
+            ? "Low (Calm market)"
+            : "Moderate",
         expiryDate: optionsData.records.expiryDates[0],
-        totalCallVolume: (optionsData.filtered.CE.totVol / 100000).toFixed(2) + 'L',
-        totalPutVolume: (optionsData.filtered.PE.totVol / 100000).toFixed(2) + 'L',
+        totalCallVolume:
+          (optionsData.filtered.CE.totVol / 100000).toFixed(2) + "L",
+        totalPutVolume:
+          (optionsData.filtered.PE.totVol / 100000).toFixed(2) + "L",
       };
 
       const result = JSON.stringify(analysis, null, 2);
-      cacheService.set(cacheKey, result, cacheService.getTTL('OPTIONS'));
+      const cachePath = path.join(process.cwd(), "cache", "options_tool");
+      fs.mkdirSync(path.dirname(cachePath), { recursive: true });
+      fs.writeFileSync(cachePath, result);
+      cacheService.set(cacheKey, result, cacheService.getTTL("OPTIONS"));
 
       return result;
     } catch (error: any) {

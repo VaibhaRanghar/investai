@@ -29,12 +29,20 @@ export default function ComparePage() {
           <div className="mb-6">
             <MarketStatusBanner
               isOpen={marketStatus.marketState[0]?.marketStatus === "Open"}
-              niftyValue={marketStatus.indicativenifty50?.closingValue || 0}
-              niftyChange={marketStatus.indicativenifty50?.change || 0}
+              niftyValue={marketStatus.marketState[0]?.last || 0}
+              niftyChange={marketStatus.marketState[0]?.variation || 0}
               niftyChangePercent={
-                marketStatus.indicativenifty50?.perChange || 0
+                marketStatus.marketState[0]?.percentChange || 0
               }
               timestamp={marketStatus.marketState[0]?.tradeDate || ""}
+              giftNifty={
+                marketStatus.giftnifty
+                  ? {
+                      value: marketStatus.giftnifty.LASTPRICE,
+                      change: parseFloat(marketStatus.giftnifty.DAYCHANGE),
+                    }
+                  : undefined
+              }
             />
           </div>
         )}

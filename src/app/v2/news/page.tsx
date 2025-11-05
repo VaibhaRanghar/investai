@@ -9,10 +9,7 @@ import {
 import { Input } from "@/components/v2/ui/Input";
 import { Tabs } from "@/components/v2/ui/Tabs";
 import { Badge } from "@/components/v2/ui/Badge";
-import {
-  MarketStatusBanner,
-  dummyMarketStatus,
-} from "@/components/v2/market/MarketStatusBanner";
+import { MarketStatusBanner } from "@/components/v2/market/MarketStatusBanner";
 import {
   Newspaper,
   Search,
@@ -21,9 +18,11 @@ import {
   Calendar,
   FileText,
 } from "lucide-react";
+import { useMarketStatus } from "@/hooks/v2/useMarketStatus";
 
 export default function NewsPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const { marketStatus } = useMarketStatus();
 
   const tabs = [
     {
@@ -43,9 +42,27 @@ export default function NewsPage() {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Market Status */}
-        <div className="mb-6">
-          <MarketStatusBanner {...dummyMarketStatus} />
-        </div>
+        {marketStatus && (
+          <div className="mb-6">
+            <MarketStatusBanner
+              isOpen={marketStatus.marketState[0]?.marketStatus === "Open"}
+              niftyValue={marketStatus.marketState[0]?.last || 0}
+              niftyChange={marketStatus.marketState[0]?.variation || 0}
+              niftyChangePercent={
+                marketStatus.marketState[0]?.percentChange || 0
+              }
+              timestamp={marketStatus.marketState[0]?.tradeDate || ""}
+              giftNifty={
+                marketStatus.giftnifty
+                  ? {
+                      value: marketStatus.giftnifty.LASTPRICE,
+                      change: parseFloat(marketStatus.giftnifty.DAYCHANGE),
+                    }
+                  : undefined
+              }
+            />
+          </div>
+        )}
 
         {/* Header */}
         <div className="mb-8">
