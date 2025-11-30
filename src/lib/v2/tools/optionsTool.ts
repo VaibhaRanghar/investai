@@ -18,7 +18,7 @@ export const optionsTool = new DynamicStructuredTool({
     try {
       const cacheKey = `options:${symbol}`;
       const cached = cacheService.get(cacheKey);
-      if (cached) return cached;
+      if (cached) return JSON.stringify(cached);
 
       const [optionsData, equityDetails] = await Promise.all([
         nseService.getEquityOptionChain(symbol),

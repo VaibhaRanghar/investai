@@ -17,7 +17,7 @@ export const comparisonTool = new DynamicStructuredTool({
     try {
       const cacheKey = `comparison:${symbol1}:${symbol2}`;
       const cached = cacheService.get(cacheKey);
-      if (cached) return cached;
+      if (cached) return JSON.stringify(cached);
 
       // Fetch both stocks in parallel
       const [stock1Data, stock2Data] = await Promise.all([

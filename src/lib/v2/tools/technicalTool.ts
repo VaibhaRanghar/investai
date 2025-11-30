@@ -218,72 +218,9 @@ Notes:
       cacheService.set(cacheKey, analysis, cacheService.getTTL("DETAILS"));
       return JSON.stringify(analysis);
     } catch (error: any) {
-      return {
+      return JSON.stringify({
         error: `Technical analysis error for ${symbol}: ${error.message}`,
-      };
+      });
     }
   },
-});
-JSON.stringify({
-  input: "Analyze everything you can about HDFC bank",
-  output:
-    "**Current Status**\n\nHDFC Bank is trading at ₹985.70, with a day's movement of -0.70%. The stock has been in an uptrend for the past few days, with its price range between ₹983.70 and ₹997.00. The 52-week position of the stock is 83.3% within its range, indicating a strong trend.\n\n**Valuation Assessment**\n\nThe P/E ratio of HDFC Bank is 21.01, which is higher than the sector average of 20.74. This indicates that the stock is overvalued compared to its peers. However, the fair value opinion cannot be determined without more information on the company's fundamentals. The price-to-fundamentals relationship is not available due to lack of data.\n\n**Fundamental Strength**\n\nThe promoter holding in HDFC Bank is 0.00%, indicating no significant influence from promoters. The profit margins and financial health of the company are strong, with a recent dividend announcement of bonus 1:1 on August 26, 2025. However, the latest announcement on October 30, 2025, indicates that the board meeting outcome is not publicly available.\n\n**Technical Position**\n\nThe trend of HDFC Bank is bullish, with key support and resistance levels at ₹983.70 and ₹997.00 respectively. The volume and delivery percentage are high, indicating strong buying activity. However, the RSI value of 100 indicates overbought conditions, which may lead to a correction.\n\n**Risk Factors**\n\nRecent concerns or changes in HDFC Bank include the outcome of the board meeting on October 30, 2025, which is not publicly available. Market sentiment is neutral, with no significant options data available. Volatility assessment is not possible due to lack of data.\n\n**Recommendation**\n\nBased on the analysis, I recommend a **BUY** position in HDFC Bank, targeting ₹1000 and stopping at ₹980. The investor type suitability is **High-Risk, High-Reward**, as the stock has shown strong growth potential but also high volatility.",
-  intermediateSteps: [
-    {
-      action: {
-        tool: "analyze_stock",
-        toolInput: { symbol: "HDFCBANK" },
-        toolCallId: "5a85c04f-1259-4768-b4b3-e9258a9a58f9",
-        log: 'Invoking "analyze_stock" with {"symbol":"HDFCBANK"}\n',
-        messageLog: [
-          {
-            lc: 1,
-            type: "constructor",
-            id: ["langchain_core", "messages", "AIMessageChunk"],
-            kwargs: {
-              content: "",
-              additional_kwargs: {},
-              response_metadata: {
-                model: "llama3.2:3b",
-                created_at: "2025-11-05T11:05:19.560754Z",
-                done: true,
-                done_reason: "stop",
-                total_duration: 10780305625,
-                load_duration: 130062292,
-                prompt_eval_count: 2128,
-                prompt_eval_duration: 9669224043,
-                eval_count: 20,
-                eval_duration: 832318251,
-              },
-              tool_call_chunks: [
-                {
-                  name: "analyze_stock",
-                  args: '{"symbol":"HDFCBANK"}',
-                  type: "tool_call_chunk",
-                  index: 0,
-                  id: "5a85c04f-1259-4768-b4b3-e9258a9a58f9",
-                },
-              ],
-              usage_metadata: {
-                input_tokens: 2128,
-                output_tokens: 20,
-                total_tokens: 2148,
-              },
-              tool_calls: [
-                {
-                  name: "analyze_stock",
-                  args: { symbol: "HDFCBANK" },
-                  id: "5a85c04f-1259-4768-b4b3-e9258a9a58f9",
-                  type: "tool_call",
-                },
-              ],
-              invalid_tool_calls: [],
-            },
-          },
-        ],
-      },
-      observation:
-        '{"symbol":"HDFCBANK","name":"HDFC Bank Limited","sector":"Private Sector Bank","price":"₹985.70","change":"₹-6.95 (-0.70%)","dayRange":"₹983.70 - ₹997.00","fiftyTwoWeekRange":"₹812.15 - ₹1020.50","position52w":"83.3% of range","vwap":"₹990.21","peRatio":"21.01","sectorPE":"20.74","marketCap":"₹1515680.68 Cr","volume":"₹200.25","deliveryPercent":"53.90%","ma5":"₹978.53","ma10":"₹966.9399999999998","ma20":"₹965.1599999999999","rsi":100,"trend":"bullish","volatility":"121.13%","promoterHolding":"   0.00","recentDividend":"Bonus 1:1 on 26-Aug-2025","latestAnnouncement":"Outcome of Board Meeting on 30-Oct-2025 11:16:51","fnoAvailable":"Yes","indices":"NIFTY 50"}',
-    },
-  ],
 });

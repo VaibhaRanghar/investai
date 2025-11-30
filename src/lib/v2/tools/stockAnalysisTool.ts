@@ -188,7 +188,9 @@ Notes:
       // Return structured
       return JSON.stringify(analysis);
     } catch (error: any) {
-      return { error: `Error analyzing ${symbol}: ${error.message}` };
+      return JSON.stringify({
+        error: `Error analyzing ${symbol}: ${error.message}`,
+      });
     }
   },
 });
