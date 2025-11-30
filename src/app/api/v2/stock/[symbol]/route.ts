@@ -53,7 +53,6 @@ export async function GET(
 
     // Cache for 5 minutes
     cacheService.set(cacheKey, data, cacheService.getTTL("DETAILS"));
-    console.log("USESTOCKDATA = ", data);
     return successResponse({ data, cached: false });
   } catch (error: any) {
     console.error("Stock API Error:", error);

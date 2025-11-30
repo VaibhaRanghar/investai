@@ -27,7 +27,6 @@ export class FinancialCalculations {
     historicalData: EquityHistoricalData,
     period: number
   ): number {
-    console.log("MA calculation historical data = ", historicalData);
     const data = historicalData.data.slice(0, period);
     const sum = data.reduce(
       (acc: any, item: { CH_CLOSING_PRICE: any }) =>

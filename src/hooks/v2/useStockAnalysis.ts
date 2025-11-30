@@ -15,7 +15,6 @@ export function useStockAnalysis() {
     console.log("UseAnalysis:", result);
     if (result.success) {
       const answer = result.answer;
-      console.log("Answer = ", answer);
       setAnalysis(answer || null);
     } else {
       setError(result.error || "Analysis failed");
