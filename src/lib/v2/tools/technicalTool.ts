@@ -58,7 +58,7 @@ Notes:
     try {
       const cacheKey = `technical:${symbol}`;
       const cached = cacheService.get(cacheKey);
-      if (cached) return cached;
+      if (cached) return JSON.stringify(cached);
 
       const [equityDetails, historicalDataResponse] = await Promise.all([
         nseService.getEquityDetails(symbol),

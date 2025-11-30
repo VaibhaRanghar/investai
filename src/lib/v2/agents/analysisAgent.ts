@@ -3,11 +3,11 @@ import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { llmService } from "../services/llmService";
 import { stockAnalysisTool } from "../tools/stockAnalysisTool";
 import { technicalTool } from "../tools/technicalTool";
-import { optionsTool } from "../tools/optionsTool";
-import { newsTool } from "../tools/newsTool";
+// import { optionsTool } from "../tools/optionsTool";
+// import { newsTool } from "../tools/newsTool";
 import { STOCK_ANALYSIS_SYSTEM_PROMPT } from "../prompts/analysisPrompts";
 import { getSymbolTool } from "../tools/getSymbolTool";
-import { comparisonTool } from "../tools/comparisonTool";
+// import { comparisonTool } from "../tools/comparisonTool";
 
 export class AnalysisAgent {
   private executor: AgentExecutor;

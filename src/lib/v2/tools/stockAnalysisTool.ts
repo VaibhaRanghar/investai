@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
-import { cacheService } from "../services/cacheService";
 import { FinancialCalculations } from "../utils/calculations";
 import { nseService } from "@/lib/services/nseService";
-import path from "path";
-import fs from "fs";
 import { safeNum, safePercent } from "../utils/validators";
 
 export const stockAnalysisTool = new DynamicStructuredTool({
@@ -76,7 +73,7 @@ Notes:
       const hist = historical.status === "fulfilled" ? historical.value : null;
 
       if (!equity) {
-        return { error: `Stock ${symbol} not found on NSE.` };
+        return JSON.stringify({ error: `Stock ${symbol} not found on NSE.` });
       }
 
       // Calculations with defensive checks

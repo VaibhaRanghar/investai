@@ -1,5 +1,3 @@
-import path from "path";
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 interface CacheEntry<T> {
   data: T;

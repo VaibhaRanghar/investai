@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DynamicStructuredTool, DynamicTool } from "langchain/tools";
+import { DynamicStructuredTool } from "langchain/tools";
 import z from "zod";
 import { fetchNSEStocks } from "../utils/fetchNSEStocks";
 export const getSymbolTool = new DynamicStructuredTool({
@@ -12,6 +12,7 @@ export const getSymbolTool = new DynamicStructuredTool({
   }),
   func: async ({ companyName }) => {
     try {
+      console.log("Company name sent to get_symbol tool: ", companyName);
       const data = await fetchNSEStocks(companyName);
       return JSON.stringify(data);
     } catch (error: any) {

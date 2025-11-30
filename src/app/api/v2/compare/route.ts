@@ -48,29 +48,32 @@ export async function POST(request: NextRequest) {
     // Generate AI comparison
     const comparisonAgent = new ComparisonAgent();
     const insights = await comparisonAgent.compare(symbols[0], symbols[1]);
-    
+
     return successResponse({
-      comparison: {
-        stock1: {
-          symbol: stock1.info.symbol,
-          name: stock1.info.companyName,
-          price: stock1.priceInfo.lastPrice,
-          change: stock1.priceInfo.change,
-          pChange: stock1.priceInfo.pChange,
-          peRatio: stock1.metadata.pdSymbolPe,
+      success: true,
+      data: {
+        comparison: {
+          stock1: {
+            symbol: stock1.info.symbol,
+            name: stock1.info.companyName,
+            price: stock1.priceInfo.lastPrice,
+            change: stock1.priceInfo.change,
+            pChange: stock1.priceInfo.pChange,
+            peRatio: stock1.metadata.pdSymbolPe,
+          },
+          stock2: {
+            symbol: stock2.info.symbol,
+            name: stock2.info.companyName,
+            price: stock2.priceInfo.lastPrice,
+            change: stock2.priceInfo.change,
+            pChange: stock2.priceInfo.pChange,
+            peRatio: stock2.metadata.pdSymbolPe,
+          },
         },
-        stock2: {
-          symbol: stock2.info.symbol,
-          name: stock2.info.companyName,
-          price: stock2.priceInfo.lastPrice,
-          change: stock2.priceInfo.change,
-          pChange: stock2.priceInfo.pChange,
-          peRatio: stock2.metadata.pdSymbolPe,
+        insights,
+        metadata: {
+          processingTime: Date.now() - startTime,
         },
-      },
-      insights,
-      metadata: {
-        processingTime: Date.now() - startTime,
       },
     });
   } catch (error: any) {

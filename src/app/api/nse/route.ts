@@ -1,20 +1,20 @@
 import { testTool } from "@/lib/v2/tools/toolTester";
-import { fetchNSEStocks } from "@/lib/v2/utils/fetchNSEStocks";
+// import { fetchNSEStocks } from "@/lib/v2/utils/fetchNSEStocks";
 import { NextResponse } from "next/server";
-import { NseIndia } from "stock-nse-india";
+// import { NseIndia } from "stock-nse-india";
 
 export async function GET() {
-  const nse = new NseIndia();
+  // const nse = new NseIndia();
   const TAT = await testTool("CAPTRU-RE1");
 
-  const range = {
-    start: new Date("2020-01-01"),
-    end: new Date("2023-12-31"),
-  };
-  const range2 = {
-    start: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
-    end: new Date(),
-  };
+  // const range = {
+  //   start: new Date("2020-01-01"),
+  //   end: new Date("2023-12-31"),
+  // };
+  // const range2 = {
+  //   start: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
+  //   end: new Date(),
+  // };
   // const circulars = await nse.getCirculars();
   // const glossary = await nse.getGlossary();
   // const marketTurnover = await nse.getMarketTurnover();

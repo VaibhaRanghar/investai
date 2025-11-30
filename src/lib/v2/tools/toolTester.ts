@@ -2,7 +2,6 @@ import { cacheService } from "../services/cacheService";
 import { FinancialCalculations } from "../utils/calculations";
 import { nseService } from "@/lib/services/nseService";
 import { enoughHistory, safeNum, safePercent } from "../utils/validators";
-import { JsonOutputParser } from "@langchain/core/output_parsers";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export async function testTool(symbol: string) {
@@ -180,171 +179,143 @@ async function technicalAnalysisToolSafe(symbol: string) {
 // <-------------------------------------------------------------------------------------------------->
 // <-------------------------------------------------------------------------------------------------->
 
-async function stockAnalysisToolSafe(symbol: string) {
-  try {
-    // Fetch data
-    const [equityDetails, tradeInfo, corporateInfo, historical] =
-      await Promise.allSettled([
-        nseService.getEquityDetails(symbol),
-        nseService.getEquityTradeInfo(symbol),
-        nseService.getEquityCorporateInfo(symbol),
-        nseService.getEquityHistoricalData(symbol, {
-          start: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
-          end: new Date(),
-        }),
-      ]);
+// async function stockAnalysisToolSafe(symbol: string) {
+//   try {
+//     // Fetch data
+//     const [equityDetails, tradeInfo, corporateInfo, historical] =
+//       await Promise.allSettled([
+//         nseService.getEquityDetails(symbol),
+//         nseService.getEquityTradeInfo(symbol),
+//         nseService.getEquityCorporateInfo(symbol),
+//         nseService.getEquityHistoricalData(symbol, {
+//           start: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
+//           end: new Date(),
+//         }),
+//       ]);
 
-    // Graceful extraction
-    const equity =
-      equityDetails.status === "fulfilled" ? equityDetails.value : null;
-    const trade = tradeInfo.status === "fulfilled" ? tradeInfo.value : null;
-    const corporate =
-      corporateInfo.status === "fulfilled" ? corporateInfo.value : null;
-    const hist = historical.status === "fulfilled" ? historical.value : null;
+//     // Graceful extraction
+//     const equity =
+//       equityDetails.status === "fulfilled" ? equityDetails.value : null;
+//     const trade = tradeInfo.status === "fulfilled" ? tradeInfo.value : null;
+//     const corporate =
+//       corporateInfo.status === "fulfilled" ? corporateInfo.value : null;
+//     const hist = historical.status === "fulfilled" ? historical.value : null;
 
-    if (!equity) {
-      return { error: `Stock ${symbol} not found on NSE.` };
-    }
+//     if (!equity) {
+//       return { error: `Stock ${symbol} not found on NSE.` };
+//     }
 
-    // Calculations with defensive checks
-    const price = safeNum(equity.priceInfo.lastPrice);
-    const change = safeNum(equity.priceInfo.change);
-    const pChange = safeNum(equity.priceInfo.pChange);
-    let position52w = "N/A";
-    try {
-      position52w = safeNum(
-        FinancialCalculations.calculate52WeekPosition(
-          equity.priceInfo.lastPrice,
-          equity.priceInfo.weekHighLow.min,
-          equity.priceInfo.weekHighLow.max
-        ),
-        1
-      );
-    } catch {
-      /* fallback to N/A */
-    }
+//     // Calculations with defensive checks
+//     const price = safeNum(equity.priceInfo.lastPrice);
+//     const change = safeNum(equity.priceInfo.change);
+//     const pChange = safeNum(equity.priceInfo.pChange);
+//     let position52w = "N/A";
+//     try {
+//       position52w = safeNum(
+//         FinancialCalculations.calculate52WeekPosition(
+//           equity.priceInfo.lastPrice,
+//           equity.priceInfo.weekHighLow.min,
+//           equity.priceInfo.weekHighLow.max
+//         ),
+//         1
+//       );
+//     } catch {
+//       /* fallback to N/A */
+//     }
 
-    // Technicals (defensively handle missing or invalid hist)
-    let ma5, ma10, ma20, rsi, volatility, trend;
-    if (hist) {
-      try {
-        ma5 = FinancialCalculations.calculateMA(hist[0], 5);
-        ma10 = FinancialCalculations.calculateMA(hist[0], 10);
-        ma20 = FinancialCalculations.calculateMA(hist[0], 20);
-        rsi = FinancialCalculations.calculateRSI(hist[0], 1);
-        volatility = safePercent(
-          FinancialCalculations.calculateVolatility(hist[0])
-        );
-        trend = FinancialCalculations.determineTrend(ma5, ma10, ma20) || "N/A";
-      } catch {
-        ma5 = ma10 = ma20 = rsi = volatility = trend = "N/A";
-      }
-    } else {
-      ma5 = ma10 = ma20 = rsi = volatility = trend = "N/A";
-    }
+//     // Technicals (defensively handle missing or invalid hist)
+//     let ma5, ma10, ma20, rsi, volatility, trend;
+//     if (hist) {
+//       try {
+//         ma5 = FinancialCalculations.calculateMA(hist[0], 5);
+//         ma10 = FinancialCalculations.calculateMA(hist[0], 10);
+//         ma20 = FinancialCalculations.calculateMA(hist[0], 20);
+//         rsi = FinancialCalculations.calculateRSI(hist[0], 1);
+//         volatility = safePercent(
+//           FinancialCalculations.calculateVolatility(hist[0])
+//         );
+//         trend = FinancialCalculations.determineTrend(ma5, ma10, ma20) || "N/A";
+//       } catch {
+//         ma5 = ma10 = ma20 = rsi = volatility = trend = "N/A";
+//       }
+//     } else {
+//       ma5 = ma10 = ma20 = rsi = volatility = trend = "N/A";
+//     }
 
-    // Shareholdings guard
-    let promoterHolding = "N/A";
-    if (corporate?.shareholdings_patterns?.data) {
-      const shareData = Object.values(
-        corporate.shareholdings_patterns.data
-      ).pop() as Record<string, any>;
-      const prom = shareData?.[0]?.["Promoter & Promoter Group"];
-      promoterHolding = prom != null && prom !== "" ? prom : "N/A";
-    }
+//     // Shareholdings guard
+//     let promoterHolding = "N/A";
+//     if (corporate?.shareholdings_patterns?.data) {
+//       const shareData = Object.values(
+//         corporate.shareholdings_patterns.data
+//       ).pop() as Record<string, any>;
+//       const prom = shareData?.[0]?.["Promoter & Promoter Group"];
+//       promoterHolding = prom != null && prom !== "" ? prom : "N/A";
+//     }
 
-    // Response object (every field safe-guarded)
-    const analysis = {
-      symbol: equity.info.symbol || "N/A",
-      name: equity.info.companyName || "N/A",
-      sector: equity.metadata.industry || "N/A",
+//     // Response object (every field safe-guarded)
+//     const analysis = {
+//       symbol: equity.info.symbol || "N/A",
+//       name: equity.info.companyName || "N/A",
+//       sector: equity.metadata.industry || "N/A",
 
-      price: `₹${price}`,
-      change:
-        change !== "N/A" && pChange !== "N/A"
-          ? `${(change as unknown as number) >= 0 ? "+" : ""}₹${change} (${
-              (pChange as unknown as number) >= 0 ? "+" : ""
-            }${pChange}%)`
-          : "N/A",
-      dayRange: `₹${safeNum(
-        equity.priceInfo.intraDayHighLow?.min
-      )} - ₹${safeNum(equity.priceInfo.intraDayHighLow?.max)}`,
-      fiftyTwoWeekRange: `₹${safeNum(
-        equity.priceInfo.weekHighLow?.min
-      )} - ₹${safeNum(equity.priceInfo.weekHighLow?.max)}`,
-      position52w: position52w !== "N/A" ? `${position52w}% of range` : "N/A",
-      vwap: `₹${safeNum(equity.priceInfo.vwap)}`,
+//       price: `₹${price}`,
+//       change:
+//         change !== "N/A" && pChange !== "N/A"
+//           ? `${(change as unknown as number) >= 0 ? "+" : ""}₹${change} (${
+//               (pChange as unknown as number) >= 0 ? "+" : ""
+//             }${pChange}%)`
+//           : "N/A",
+//       dayRange: `₹${safeNum(
+//         equity.priceInfo.intraDayHighLow?.min
+//       )} - ₹${safeNum(equity.priceInfo.intraDayHighLow?.max)}`,
+//       fiftyTwoWeekRange: `₹${safeNum(
+//         equity.priceInfo.weekHighLow?.min
+//       )} - ₹${safeNum(equity.priceInfo.weekHighLow?.max)}`,
+//       position52w: position52w !== "N/A" ? `${position52w}% of range` : "N/A",
+//       vwap: `₹${safeNum(equity.priceInfo.vwap)}`,
 
-      peRatio: safeNum(equity.metadata.pdSymbolPe) || "N/A",
-      sectorPE: safeNum(equity.metadata.pdSectorPe) || "N/A",
-      marketCap: trade
-        ? FinancialCalculations.formatCurrency(
-            Number(trade.marketDeptOrderBook?.tradeInfo?.totalMarketCap || 0) *
-              1e7
-          )
-        : "N/A",
+//       peRatio: safeNum(equity.metadata.pdSymbolPe) || "N/A",
+//       sectorPE: safeNum(equity.metadata.pdSectorPe) || "N/A",
+//       marketCap: trade
+//         ? FinancialCalculations.formatCurrency(
+//             Number(trade.marketDeptOrderBook?.tradeInfo?.totalMarketCap || 0) *
+//               1e7
+//           )
+//         : "N/A",
 
-      volume: trade
-        ? FinancialCalculations.formatCurrency(
-            Number(trade.marketDeptOrderBook?.tradeInfo?.totalTradedVolume) || 0
-          )
-        : "N/A",
-      deliveryPercent: trade
-        ? safePercent(trade.securityWiseDP?.deliveryToTradedQuantity)
-        : "N/A",
+//       volume: trade
+//         ? FinancialCalculations.formatCurrency(
+//             Number(trade.marketDeptOrderBook?.tradeInfo?.totalTradedVolume) || 0
+//           )
+//         : "N/A",
+//       deliveryPercent: trade
+//         ? safePercent(trade.securityWiseDP?.deliveryToTradedQuantity)
+//         : "N/A",
 
-      ma5: ma5 !== "N/A" ? `₹${ma5}` : "N/A",
-      ma10: ma10 !== "N/A" ? `₹${ma10}` : "N/A",
-      ma20: ma20 !== "N/A" ? `₹${ma20}` : "N/A",
-      rsi,
-      trend,
-      volatility,
+//       ma5: ma5 !== "N/A" ? `₹${ma5}` : "N/A",
+//       ma10: ma10 !== "N/A" ? `₹${ma10}` : "N/A",
+//       ma20: ma20 !== "N/A" ? `₹${ma20}` : "N/A",
+//       rsi,
+//       trend,
+//       volatility,
 
-      promoterHolding,
-      recentDividend: corporate?.corporate_actions?.data?.[0]
-        ? `${corporate.corporate_actions.data[0].purpose} on ${corporate.corporate_actions.data[0].exdate}`
-        : "No recent dividend",
-      latestAnnouncement: corporate?.latest_announcements?.data?.[0]
-        ? `${corporate.latest_announcements.data[0].subject} on ${corporate.latest_announcements.data[0].broadcastdate}`
-        : "No recent announcements",
+//       promoterHolding,
+//       recentDividend: corporate?.corporate_actions?.data?.[0]
+//         ? `${corporate.corporate_actions.data[0].purpose} on ${corporate.corporate_actions.data[0].exdate}`
+//         : "No recent dividend",
+//       latestAnnouncement: corporate?.latest_announcements?.data?.[0]
+//         ? `${corporate.latest_announcements.data[0].subject} on ${corporate.latest_announcements.data[0].broadcastdate}`
+//         : "No recent announcements",
 
-      fnoAvailable: equity.info.isFNOSec ? "Yes" : "No",
-      indices: equity.metadata.pdSectorInd || "N/A",
-    };
+//       fnoAvailable: equity.info.isFNOSec ? "Yes" : "No",
+//       indices: equity.metadata.pdSectorInd || "N/A",
+//     };
 
-    const parser = new JsonOutputParser();
-    const result = parser.parse(JSON.stringify(analysis));
-    // Return structured
-    return result;
-  } catch (error: any) {
-    return { error: `Error analyzing ${symbol}: ${error.message}` };
-  }
-}
-
-interface stockAnalysisToolResultDataType {
-  fnoAvailable: string;
-  indices: string;
-  promoterHolding?: any;
-  recentDividend?: string | undefined;
-  latestAnnouncement?: string | undefined;
-  ma5?: string | undefined;
-  ma10?: string | undefined;
-  ma20?: string | undefined;
-  rsi?: string | undefined;
-  trend?: "bullish" | "bearish" | "neutral" | undefined;
-  volatility?: string | undefined;
-  symbol: string;
-  name: string;
-  sector: string;
-  price: string;
-  change: string;
-  dayRange: string;
-  fiftyTwoWeekRange: string;
-  position52w: string;
-  vwap: string;
-  peRatio: string;
-  sectorPE: string;
-  marketCap: string;
-  volume: string;
-  deliveryPercent: string;
-}
+//     const parser = new JsonOutputParser();
+//     const result = parser.parse(JSON.stringify(analysis));
+//     // Return structured
+//     return result;
+//   } catch (error: any) {
+//     return { error: `Error analyzing ${symbol}: ${error.message}` };
+//   }
+// }
